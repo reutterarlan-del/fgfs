@@ -22,7 +22,7 @@
             --gogh-yellow: #fcd440;     /* 梵高黄 */
             
             /* 颜色定义 */
-            /* 1. 金色 (用于 Event Log 文字、短线和滚动条) */
+            /* 1. 金色 */
             --star-line-color: rgba(255, 223, 80, 1.0); 
             --star-line-glow-inner: rgba(255, 223, 80, 0.5); 
             
@@ -73,7 +73,6 @@
             filter: brightness(0.8) contrast(1.1);
             transition: transform 0.8s ease;
         }
-        /* 保持图片的悬停放大效果，增加氛围感（但不跳转） */
         .split-left:hover .cover-img {
             transform: scale(1.05);
             filter: brightness(1.0);
@@ -100,7 +99,7 @@
             font-style: italic;
             line-height: 1.1;
             white-space: nowrap;
-            cursor: default; /* 鼠标放上去是箭头，提示不可点击 */
+            cursor: default;
         }
         .art-subtitle {
             font-size: 1.1em; 
@@ -108,7 +107,7 @@
             margin-bottom: 0;
             letter-spacing: 1px;
             white-space: nowrap;
-            cursor: default; /* 鼠标放上去是箭头 */
+            cursor: default; 
         }
 
         .enter-btn {
@@ -121,7 +120,7 @@
             transition: all 0.3s;
             background: rgba(0,0,0,0.5);
             white-space: nowrap;
-            cursor: pointer; /* 只有这里鼠标变手型 */
+            cursor: pointer;
         }
         .enter-btn:hover {
             background: var(--gogh-yellow);
@@ -145,10 +144,9 @@
             width: 26px; 
         }
         
-        /* 滚动条轨道颜色：改为金色 */
         .split-right::-webkit-scrollbar-track {
             background: transparent;
-            /* 中间画一条金色的细线，呼应 Event Log 分隔线 */
+            /* 中间画一条金色的细线 */
             background-image: linear-gradient(to right, 
                 transparent 48%, 
                 rgba(255, 223, 80, 0.3) 49%, 
@@ -327,7 +325,9 @@
         }
         .close-btn:hover { color: var(--gogh-yellow); text-shadow: 0 0 15px var(--gogh-yellow); }
 
-        /* 移动端适配 */
+        /* ==================
+           移动端适配 (核心修改)
+           ================== */
         @media (max-width: 768px) {
             .hero-split { flex-direction: column; height: auto; box-shadow: none; border-bottom: none; }
             
@@ -348,7 +348,23 @@
                 box-shadow: none;
                 z-index: 10;
             }
-            .modules-grid { gap: 20px; grid-template-columns: repeat(2, 1fr); }
+            
+            /* [修改] 优化移动端 2x2 网格布局 */
+            .modules-grid { 
+                gap: 15px; /* 减小间距 */
+                grid-template-columns: repeat(2, 1fr); /* 保持两列 */
+                width: 96%; /* [关键] 增加宽度到96%，给文字更多空间 */
+            }
+
+            .module-item {
+                padding: 10px 5px; /* 减小内边距 */
+            }
+
+            /* [关键] 强制文字不换行，稍微减小字号 */
+            .module-title {
+                white-space: nowrap; /* 强制 Emoji 和文字在同一行 */
+                font-size: 1.2em; /* 稍微缩小一点字号以防溢出 */
+            }
             
             .art-overlay { 
                 flex-direction: row; 

@@ -22,7 +22,7 @@
             --gogh-yellow: #fcd440;     /* 梵高黄 */
             
             /* 颜色定义 */
-            /* 1. 金色 */
+            /* 1. 金色 (用于 Event Log 文字、短线和滚动条) */
             --star-line-color: rgba(255, 223, 80, 1.0); 
             --star-line-glow-inner: rgba(255, 223, 80, 0.5); 
             
@@ -146,7 +146,6 @@
         
         .split-right::-webkit-scrollbar-track {
             background: transparent;
-            /* 中间画一条金色的细线 */
             background-image: linear-gradient(to right, 
                 transparent 48%, 
                 rgba(255, 223, 80, 0.3) 49%, 
@@ -349,22 +348,34 @@
                 z-index: 10;
             }
             
-            /* [修改] 优化移动端 2x2 网格布局 */
+            /* 移动端 2x2 网格布局优化 */
             .modules-grid { 
-                gap: 15px; /* 减小间距 */
-                grid-template-columns: repeat(2, 1fr); /* 保持两列 */
-                width: 96%; /* [关键] 增加宽度到96%，给文字更多空间 */
+                gap: 15px; 
+                grid-template-columns: repeat(2, 1fr); 
+                width: 96%; /* 增加宽度 */
             }
 
             .module-item {
-                padding: 10px 5px; /* 减小内边距 */
+                padding: 10px 5px; 
             }
 
-            /* [关键] 强制文字不换行，稍微减小字号 */
             .module-title {
-                white-space: nowrap; /* 强制 Emoji 和文字在同一行 */
-                font-size: 1.2em; /* 稍微缩小一点字号以防溢出 */
+                white-space: nowrap; 
+                font-size: 1.2em;
             }
+
+            /* [核心修改] 
+               针对移动端：奇数项 (Basic, Magazine) 左对齐
+               nth-child(odd) 代表第1个和第3个元素
+            */
+            .module-item:nth-child(odd) {
+                justify-content: flex-start; /* 内容靠左 */
+                padding-left: 10px; /* 增加一点左边距，防止贴边太紧 */
+            }
+            
+            /* 偶数项 (Voice, Stage) 保持居中或可以设为 flex-end (右对齐) 以求对称 
+               如果不写，默认会继承上面的 justify-content: center 
+            */
             
             .art-overlay { 
                 flex-direction: row; 

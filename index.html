@@ -354,13 +354,16 @@
                 position: static; 
                 background: transparent; 
                 padding-top: 0;
-                /* [新增] 移动端允许点击 */
                 cursor: pointer;
-                /* 防止点击时出现蓝色高亮背景 */
                 -webkit-tap-highlight-color: transparent;
             }
             
-            /* [新增] 显示并设置箭头样式 */
+            /* [修改] 隐藏 Event Log 下面的分隔线 */
+            .timeline-header::after {
+                display: none;
+            }
+            
+            /* 显示折叠箭头 */
             .header-arrow {
                 display: inline-block;
                 font-size: 0.6em;
@@ -369,26 +372,25 @@
                 transition: transform 0.3s ease;
                 color: var(--gogh-yellow);
             }
-            /* 箭头旋转动画 */
             .timeline-header.active .header-arrow {
                 transform: rotate(180deg);
             }
 
             .split-right { height: auto; padding: 20px; overflow-y: visible; }
             
-            /* [新增] 年份列表默认隐藏动画 */
+            /* 年份列表默认隐藏 */
             .year-list {
                 max-height: 0;
                 opacity: 0;
                 overflow: hidden;
-                padding: 0; /* 折叠时去掉padding */
+                padding: 0; 
                 transition: max-height 0.5s ease, opacity 0.3s ease, padding 0.5s ease;
             }
-            /* [新增] 激活状态：展开 */
+            /* 激活状态：展开 */
             .year-list.active {
-                max-height: 600px; /* 足够展示所有年份的高度 */
+                max-height: 600px; 
                 opacity: 1;
-                padding: 30px 0; /* 恢复padding */
+                padding: 30px 0; 
             }
 
             .bottom-section { 
@@ -502,9 +504,8 @@
     </div>
 
     <script>
-        // [新增] 移动端 Event Log 折叠切换逻辑
+        // 移动端 Event Log 折叠切换逻辑
         function toggleEventLog() {
-            // 检测屏幕宽度，只有在移动端才触发折叠逻辑
             if (window.innerWidth <= 768) {
                 const header = document.querySelector('.timeline-header');
                 const list = document.getElementById('yearList');

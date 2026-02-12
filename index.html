@@ -144,10 +144,9 @@
             width: 26px; 
         }
         
-        /* 滚动条轨道颜色：改为金色 */
         .split-right::-webkit-scrollbar-track {
             background: transparent;
-            /* 中间画一条金色的细线，呼应 Event Log 分隔线 */
+            /* 中间画一条金色的细线 */
             background-image: linear-gradient(to right, 
                 transparent 48%, 
                 rgba(255, 223, 80, 0.3) 49%, 
@@ -189,7 +188,6 @@
             box-shadow: none;
             letter-spacing: 2px;
             
-            /* 默认桌面端不需要点击手势 */
             cursor: default;
         }
 
@@ -204,7 +202,6 @@
             box-shadow: none;
         }
         
-        /* 桌面端隐藏折叠箭头 */
         .header-arrow {
             display: none;
         }
@@ -214,7 +211,6 @@
             flex-direction: column;
             gap: 20px;
             padding: 30px;
-            /* 桌面端默认显示，不做动画限制 */
             max-height: none;
             opacity: 1;
         }
@@ -358,12 +354,10 @@
                 -webkit-tap-highlight-color: transparent;
             }
             
-            /* [修改] 隐藏 Event Log 下面的分隔线 */
             .timeline-header::after {
                 display: none;
             }
             
-            /* 显示折叠箭头 */
             .header-arrow {
                 display: inline-block;
                 font-size: 0.6em;
@@ -378,7 +372,6 @@
 
             .split-right { height: auto; padding: 20px; overflow-y: visible; }
             
-            /* 年份列表默认隐藏 */
             .year-list {
                 max-height: 0;
                 opacity: 0;
@@ -386,9 +379,10 @@
                 padding: 0; 
                 transition: max-height 0.5s ease, opacity 0.3s ease, padding 0.5s ease;
             }
-            /* 激活状态：展开 */
+            
+            /* [修复] 增加高度上限，确保能显示所有年份 */
             .year-list.active {
-                max-height: 600px; 
+                max-height: 1000px; /* 从600px 改为 1000px，足够容纳更多年份 */
                 opacity: 1;
                 padding: 30px 0; 
             }
@@ -401,7 +395,6 @@
                 z-index: 10;
             }
             
-            /* 移动端 2x2 网格布局优化 */
             .modules-grid { 
                 gap: 15px; 
                 grid-template-columns: repeat(2, 1fr); 
@@ -415,7 +408,6 @@
                 font-size: 1.2em;
             }
 
-            /* 奇数项左对齐 */
             .module-item:nth-child(odd) {
                 justify-content: flex-start;
                 padding-left: 10px;

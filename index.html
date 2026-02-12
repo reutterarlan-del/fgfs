@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FGFS MEMOIRE</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@400;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ==================
+           CSS 配色与全局变量
+           ================== */
+        :root {
+            /* 核心背景色 */
+            --bg-deep: #0b1026;
+            --bg-overlay: rgba(5, 10, 30, 0.5); 
+            
+            /* 文字颜色 */
+            --text-white: #f0f0f0;      
+            --text-grey: #dddddd;       
+            --gogh-yellow: #fcd440;     /* 梵高黄 */
+            
+            /* 颜色定义 */
+            /* 1. 金色 (用于 Event Log 文字、短线和滚动条) */
+            --star-line-color: rgba(255, 223, 80, 1.0); 
+            --star-line-glow-inner: rgba(255, 223, 80, 0.5); 
+            
+            --font-art: 'Playfair Display', serif;
+            --font-body: 'Noto Serif SC', serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font-body);
+            color: var(--text-white);
+            overflow-x: hidden;
+            min-height: 100vh;
+            background-color: var(--bg-deep);
+            background-image: none; 
+        }
+
+        .global-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-overlay);
+            z-index: -1;
+            backdrop-filter: blur(2px); 
+        }
+
+        /* --- 主视觉区域 --- */
+        .hero-split {
+            display: flex;
+            height: 75vh; 
+            border-bottom: none;
+            box-shadow: none; 
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 左侧：主线剧情封面 */
+        .split-left {
+            flex: 5; 
+            position: relative;
+            overflow: hidden;
+            border-right: none;
+            box-shadow: none;
+            z-index: 20; 
+        }
+        .cover-img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+            filter: brightness(0.8) contrast(1.1);
+            transition: transform 0.8s ease;
+        }
+        /* 保持图片的悬停放大效果，增加氛围感（但不跳转） */
+        .split-left:hover .cover-img {
+            transform: scale(1.05);
+            filter: brightness(1.0);
+        }
+        
+        .art-overlay {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            padding: 50px 40px;
+            background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+            display: flex;
+            justify-content: space-between; 
+            align-items: flex-end;          
+        }
+
+        .action-area { flex: 0 0 auto; }
+        .text-area { text-align: right; flex: 1; padding-left: 20px; }
+
+        .art-title {
+            font-family: var(--font-art);
+            font-size: 3.5em;
+            color: var(--gogh-yellow);
+            text-shadow: 0 0 20px rgba(252, 212, 64, 0.4);
+            margin-bottom: 5px;
+            font-style: italic;
+            line-height: 1.1;
+            white-space: nowrap;
+            cursor: default; /* 鼠标放上去是箭头，提示不可点击 */
+        }
+        .art-subtitle {
+            font-size: 1.1em; 
+            color: var(--text-grey); 
+            margin-bottom: 0;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            cursor: default; /* 鼠标放上去是箭头 */
+        }
+
+        .enter-btn {
+            display: inline-block;
+            padding: 12px 35px;
+            border: 1px solid var(--gogh-yellow);
+            color: var(--gogh-yellow);
+            font-family: var(--font-art);
+            text-decoration: none;
+            transition: all 0.3s;
+            background: rgba(0,0,0,0.5);
+            white-space: nowrap;
+            cursor: pointer; /* 只有这里鼠标变手型 */
+        }
+        .enter-btn:hover {
+            background: var(--gogh-yellow);
+            color: #000;
+            box-shadow: 0 0 15px var(--star-line-glow-inner);
+        }
+
+        /* --- 右侧：年份索引区域 --- */
+        .split-right {
+            flex: 2; 
+            background: transparent; 
+            padding: 0;
+            overflow-y: auto;
+            text-align: center;
+            position: relative;
+            z-index: 10;
+        }
+        
+        /* 魔法星星滚动条 */
+        .split-right::-webkit-scrollbar {
+            width: 26px; 
+        }
+        
+        /* 滚动条轨道颜色：改为金色 */
+        .split-right::-webkit-scrollbar-track {
+            background: transparent;
+            /* 中间画一条金色的细线，呼应 Event Log 分隔线 */
+            background-image: linear-gradient(to right, 
+                transparent 48%, 
+                rgba(255, 223, 80, 0.3) 49%, 
+                rgba(255, 223, 80, 1.0) 50%, 
+                rgba(255, 223, 80, 0.3) 51%, 
+                transparent 52%);
+        }
+        
+        .split-right::-webkit-scrollbar-thumb {
+            background-color: transparent;
+            /* 星星图标 */
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23fcd440'%3E%3Cpath d='M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z' /%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 100%; 
+            filter: drop-shadow(0 0 4px rgba(252, 212, 64, 0.9));
+        }
+
+        /* Event Log 标题及分隔线 */
+        .timeline-header {
+            font-family: var(--font-art);
+            font-size: 1.8em;
+            color: var(--text-white);
+            margin-bottom: 0; 
+            
+            position: sticky;
+            top: 0;
+            z-index: 15; 
+            background-color: var(--bg-deep); 
+            
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            
+            padding: 40px 30px 10px 30px; 
+            width: 100%;
+
+            border-bottom: none;
+            box-shadow: none;
+            letter-spacing: 2px;
+        }
+
+        /* Event Log 下方金色短线 */
+        .timeline-header::after {
+            content: '';
+            display: block;
+            width: 66%; 
+            height: 1px; 
+            margin-top: 15px;
+            background-color: var(--star-line-color);
+            box-shadow: none;
+        }
+
+        .year-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 30px;
+        }
+
+        .year-link {
+            display: block;
+            font-family: var(--font-art);
+            font-size: 2em;
+            color: var(--text-grey);
+            text-decoration: none;
+            padding: 15px;
+            border: 1px solid transparent; 
+            border-radius: 4px;
+            transition: all 0.4s ease;
+            position: relative;
+        }
+        
+        .year-link:hover {
+            color: var(--gogh-yellow);
+            border-color: transparent; 
+            background: transparent;
+            box-shadow: none;
+            transform: translateX(5px); 
+            text-shadow: 0 0 15px var(--star-line-glow-inner);
+        }
+        
+        .year-link::before {
+            content: '•';
+            position: absolute;
+            left: 20px;
+            opacity: 0;
+            color: var(--gogh-yellow);
+            transition: opacity 0.3s;
+            text-shadow: 0 0 10px var(--gogh-yellow);
+        }
+        .year-link:hover::before {
+            opacity: 1;
+        }
+
+        /* --- 底部小模块 --- */
+        .bottom-section {
+            min-height: 25vh;
+            height: auto;
+            
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            border-top: none;
+            box-shadow: none;
+            
+            background: rgba(0,0,0,0.3);
+            position: relative;
+            z-index: 2;
+            padding: 40px 0;
+        }
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px; 
+            width: 80%;
+            max-width: 1000px;
+        }
+        
+        .module-item {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+            text-align: center;
+            padding: 20px;
+            text-decoration: none; 
+        }
+        .module-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .module-title {
+            font-family: var(--font-art);
+            font-size: 1.4em; 
+            color: var(--text-grey);
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+        
+        .module-item:hover .module-title {
+            color: var(--gogh-yellow);
+            text-shadow: 0 0 15px var(--star-line-glow-inner);
+            transform: scale(1.05);
+        }
+
+        /* --- 弹窗阅读器 --- */
+        .modal {
+            display: none; position: fixed; z-index: 2000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+        }
+        .modal-content {
+            display: flex; justify-content: center; align-items: center;
+            height: 100%;
+        }
+        .gallery-slide {
+            max-height: 90vh; max-width: 90vw; display: none;
+            border: 1px solid var(--gogh-yellow);
+            box-shadow: 0 0 40px var(--star-line-glow-inner);
+        }
+        .nav-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: none; border: none;
+            color: var(--gogh-yellow); font-size: 3rem;
+            cursor: pointer; padding: 20px;
+            text-shadow: 0 0 15px var(--gogh-yellow);
+        }
+        .close-btn {
+            position: absolute; top: 20px; right: 30px;
+            color: #888; font-size: 2.5rem; cursor: pointer;
+            transition: 0.3s;
+        }
+        .close-btn:hover { color: var(--gogh-yellow); text-shadow: 0 0 15px var(--gogh-yellow); }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .hero-split { flex-direction: column; height: auto; box-shadow: none; border-bottom: none; }
+            
+            .split-left { 
+                height: 350px; 
+                flex: none; 
+                border-right: none; 
+                border-bottom: none;
+                box-shadow: none;
+            }
+            .timeline-header { position: static; background: transparent; padding-top: 0;}
+            .split-right { height: auto; padding: 20px; overflow-y: visible; }
+            
+            .bottom-section { 
+                height: auto; 
+                padding: 30px 0; 
+                border-top: none;
+                box-shadow: none;
+                z-index: 10;
+            }
+            .modules-grid { gap: 20px; grid-template-columns: repeat(2, 1fr); }
+            
+            .art-overlay { 
+                flex-direction: row; 
+                justify-content: space-between;
+                align-items: flex-end;
+                padding: 30px 20px;
+            }
+            .art-title { font-size: 2.2em; }
+            .art-subtitle { font-size: 0.9em; }
+            .enter-btn { padding: 8px 20px; font-size: 0.9em; }
+            .text-area { text-align: right; margin-bottom: 0; padding-left: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="global-overlay"></div>
+
+    <main class="hero-split">
+        <section class="split-left">
+            <img src="images/cover.png" alt="Main Story" class="cover-img">
+            
+            <div class="art-overlay">
+                <div class="action-area">
+                    <a href="main-story.html" class="enter-btn">MS & Anniversary</a>
+                </div>
+
+                <div class="text-area">
+                    <h1 class="art-title">Memoire</h1>
+                    <p class="art-subtitle">FIGARO × FAUST</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="split-right">
+            <h2 class="timeline-header">Event Log</h2>
+            <div class="year-list">
+                
+                <a href="2024.html" class="year-link">2019</a>
+                <a href="2024.html" class="year-link">2020</a>
+                <a href="2024.html" class="year-link">2021</a>
+                <a href="2024.html" class="year-link">2022</a>
+                <a href="2024.html" class="year-link">2023</a>
+                <a href="2024.html" class="year-link">2024</a>
+                <a href="2024.html" class="year-link">2025</a>
+                <a href="2024.html" class="year-link">2026</a>
+
+            </div>
+        </section>
+    </main>
+
+    <footer class="bottom-section">
+        <div class="modules-grid">
+            <a href="#" class="module-item">
+                <span class="module-title">✨ Basic</span>
+            </a>
+
+            <a href="#" class="module-item">
+                <span class="module-title">✨ Voice</span>
+            </a>
+
+            <a href="#" class="module-item">
+                <span class="module-title">✨ Magazine</span>
+            </a>
+
+            <div class="module-item" onclick="openGallery()">
+                <span class="module-title">✨ Stage</span>
+            </div>
+        </div>
+    </footer>
+
+    <div id="gallery-modal" class="modal">
+        <span class="close-btn" onclick="closeGallery()">&times;</span>
+        <div class="modal-content">
+            <button class="nav-btn prev" onclick="changeSlide(-1)">&#10094;</button>
+            <img class="gallery-slide" src="https://via.placeholder.com/800x1200/111/fff?text=Page+1" style="display:block">
+            <img class="gallery-slide" src="https://via.placeholder.com/800x1200/111/fff?text=Page+2">
+            <button class="nav-btn next" onclick="changeSlide(1)">&#10095;</button>
+        </div>
+    </div>
+
+    <script>
+        let slideIndex = 0;
+        const slides = document.getElementsByClassName("gallery-slide");
+        const modal = document.getElementById('gallery-modal');
+
+        function openGallery() {
+            modal.style.display = "block";
+        }
+        function closeGallery() {
+            modal.style.display = "none";
+        }
+        function changeSlide(n) {
+            slideIndex += n;
+            if (slideIndex >= slides.length) slideIndex = 0;
+            if (slideIndex < 0) slideIndex = slides.length - 1;
+            Array.from(slides).forEach(slide => slide.style.display = "none");
+            slides[slideIndex].style.display = "block";
+        }
+        document.addEventListener('keydown', (e) => {
+            if (modal.style.display === "block") {
+                if (e.key === "ArrowLeft") changeSlide(-1);
+                if (e.key === "ArrowRight") changeSlide(1);
+                if (e.key === "Escape") closeGallery();
+            }
+        });
+    </script>
+</body>
+</html>

@@ -107,8 +107,8 @@
 }
 
 #back-to-top span {
-    font-size: 0.7em;     /* --- 缩小字体：从 0.8em 降到 0.7em --- */
-    letter-spacing: 0.5px;
+    font-size: 0.75em;     /* 稍微大一点点，因为单词短了 */
+    letter-spacing: 2px;   /* 增加间距，让 "T O P" 看起来更高级 */
     text-transform: uppercase;
     font-family: 'Playfair Display', serif;
 }
@@ -142,12 +142,12 @@
         <div id="content">Loading story...</div>
     </div>
 
-    <div id="back-to-top">
-        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 0L14.594 9.406L24 12L14.594 14.594L12 24L9.406 14.594L0 12L9.406 9.406L12 0Z"/>
-        </svg>
-        <span>Back to Top</span>
-    </div>
+<div id="back-to-top">
+    <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 0L14.594 9.406L24 12L14.594 14.594L12 24L9.406 14.594L0 12L9.406 9.406L12 0Z"/>
+    </svg>
+    <span>TOP</span>
+</div>
 
     <script>
         const btt = document.getElementById("back-to-top");
@@ -195,4 +195,5 @@
     </script>
 </body>
 </html>
+
 

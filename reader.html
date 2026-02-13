@@ -95,7 +95,7 @@
 
     <div class="container">
         <div class="nav-bar">
-            <a href="javascript:history.back()" class="back-link">← Return to Star Map</a>
+            <a href="javascript:history.back()" class="back-link">Back</a>
         </div>
         
         <div id="content">Loading story...</div>
@@ -117,7 +117,7 @@
         if (!fileName) {
             document.getElementById('content').innerHTML = "<p style='color:red'>Error: No file specified.</p>";
         } else {
-            fetch(`stories/${fileName}.md`)
+            fetch(`stories/${fileName}.md?v=${new Date().getTime()}`)
                 .then(response => {
                     if (!response.ok) throw new Error("Story not found");
                     return response.text();
@@ -134,3 +134,4 @@
     </script>
 </body>
 </html>
+

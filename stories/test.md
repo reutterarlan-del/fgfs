@@ -2,7 +2,7 @@
 
 
 
-\<img src="images/cover.png" alt="封面图" style="width: 100%; border-radius: 8px;">
+\<img src="https://github.com/reutterarlan-del/fgfs/blob/main/images/cover.png" alt="封面图" style="width: 100%; border-radius: 8px;">
 
 
 
@@ -363,6 +363,7 @@ fgr：原来如此。虽然我一直感觉是自己被抛弃了……。
 
 
 fgr：但对那个孩子而言，是他突然被我逐出师门了啊。
+
 
 
 

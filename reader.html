@@ -72,55 +72,56 @@
         #content img { max-width: 100%; border-radius: 5px; box-shadow: 0 0 20px rgba(0,0,0,0.5); display: block; margin: 30px auto; }
         #content blockquote { border-left: 3px solid var(--gogh-yellow); margin: 20px 0; padding-left: 20px; color: #aaa; font-style: italic; background: rgba(0,0,0,0.2); padding: 10px 20px; border-radius: 0 5px 5px 0; }
 
-        /* --- 回到顶部按钮样式 --- */
-        #back-to-top {
-            position: fixed;
-            bottom: 40px;
-            right: 40px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 15px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 20px;
-            color: var(--gogh-yellow);
-            cursor: pointer;
-            z-index: 1001;
-            backdrop-filter: blur(8px);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.4s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
+/* --- 优化后的回到顶部按钮 --- */
+#back-to-top {
+    position: fixed;
+    bottom: 30px; /* 稍微上移一点，离边缘更近 */
+    right: 30px;
+    display: flex;
+    align-items: center;
+    gap: 5px;            /* 缩小星星与文字的间距 */
+    padding: 5px 12px;   /* 缩小内边距：上下5px，左右12px */
+    background: var(--glass-bg);
+    border: none;        /* --- 移除边框 --- */
+    border-radius: 15px; /* 缩小圆角半径以匹配更小的尺寸 */
+    color: var(--gogh-yellow);
+    cursor: pointer;
+    z-index: 1001;
+    backdrop-filter: blur(8px);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s ease;
+    /* 弱化阴影，让它看起来更轻盈 */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
 
-        #back-to-top.show {
-            opacity: 1;
-            visibility: visible;
-        }
+#back-to-top.show {
+    opacity: 1;
+    visibility: visible;
+}
 
-        #back-to-top:hover {
-            border-color: var(--gogh-yellow);
-            box-shadow: 0 0 15px rgba(252, 212, 64, 0.2);
-            transform: translateY(-3px);
-        }
+#back-to-top:hover {
+    /* 悬停时只保留微弱的颜色加深，不改变布局 */
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
 
-        #back-to-top span {
-            font-size: 0.8em;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            font-family: 'Playfair Display', serif;
-        }
+#back-to-top span {
+    font-size: 0.7em;     /* --- 缩小字体：从 0.8em 降到 0.7em --- */
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    font-family: 'Playfair Display', serif;
+}
 
-        #back-to-top svg {
-            width: 16px;
-            height: 16px;
-            transition: transform 0.4s;
-        }
+#back-to-top svg {
+    width: 12px;          /* --- 缩小星星：从 16px 降到 12px --- */
+    height: 12px;
+    transition: transform 0.4s;
+}
 
-        #back-to-top:hover svg {
-            transform: rotate(90deg);
-        }
+#back-to-top:hover svg {
+    transform: rotate(90deg);
+}
 
         @media (max-width: 768px) {
             .container { padding: 25px; margin: 0; border-radius: 0; border: none; }
@@ -194,3 +195,4 @@
     </script>
 </body>
 </html>
+

@@ -4,110 +4,131 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reading... - FGFS MEMOIRE</title>
-    
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@300;400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* 这里复用了之前的星空样式 */
         :root {
             --bg-deep: #0b1026;
+            --glass-bg: rgba(15, 20, 35, 0.85); /* 深色磨砂玻璃 */
+            --glass-border: rgba(255, 223, 80, 0.3);
             --text-white: #f0f0f0;      
-            --text-grey: #cccccc;       
             --gogh-yellow: #fcd440;     
         }
+
+        /* 顶部阅读进度条 */
+        #progress-bar {
+            position: fixed; top: 0; left: 0; height: 3px;
+            background: var(--gogh-yellow);
+            width: 0%; z-index: 1000;
+            box-shadow: 0 0 10px var(--gogh-yellow);
+            transition: width 0.1s;
+        }
+
         body {
             background-color: var(--bg-deep);
             color: var(--text-white);
             font-family: 'Noto Serif SC', serif;
             margin: 0; padding: 0;
             min-height: 100vh;
+            background-image: radial-gradient(circle at 50% 30%, #1a254a 0%, #0b1026 70%);
+            background-attachment: fixed; /* 背景固定，营造深邃感 */
         }
         
         .container {
             max-width: 800px;
-            margin: 0 auto;
-            padding: 40px 20px;
+            margin: 60px auto 100px; /* 上下留白 */
+            padding: 50px;
+            
+            /* --- 核心：流光玻璃特效 --- */
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px); /* 磨砂模糊 */
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            box-shadow: 0 0 40px rgba(0,0,0,0.6), inset 0 0 20px rgba(255, 255, 255, 0.05);
         }
 
         /* 顶部导航 */
-        .nav-bar { margin-bottom: 40px; }
+        .nav-bar { margin-bottom: 40px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 20px; }
         .back-link {
             color: var(--gogh-yellow);
             text-decoration: none;
             font-family: 'Playfair Display', serif;
             font-size: 1.2em;
-            border-bottom: 1px solid transparent;
+            transition: all 0.3s;
         }
-        .back-link:hover { border-bottom: 1px solid var(--gogh-yellow); }
+        .back-link:hover { text-shadow: 0 0 10px var(--gogh-yellow); }
+
+        /* --- 视频播放器样式 (重点) --- */
+        video {
+            width: 100%;           /* 宽度撑满容器 */
+            max-height: 80vh;      /* 高度不要超过屏幕 */
+            border-radius: 8px;    /* 圆角 */
+            margin: 30px 0;        /* 上下间距 */
+            box-shadow: 0 0 20px rgba(0,0,0,0.5); /* 视频阴影 */
+            border: 1px solid rgba(255, 223, 80, 0.2); /* 微弱的金边 */
+            background: #000;      /* 视频加载前的黑底 */
+            display: block;
+        }
 
         /* 文章内容样式 */
-        #content {
-            line-height: 1.8;
-            font-size: 1.1em;
-            color: #e0e0e0;
-        }
-        
-        /* Markdown 转换后的样式 */
-        #content h1 {
-            font-family: 'Playfair Display', serif;
-            color: var(--gogh-yellow);
-            font-size: 2.5em;
-            text-align: center;
-            margin-bottom: 10px;
-        }
-        #content h2 { color: var(--text-white); margin-top: 40px; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        #content { line-height: 1.8; font-size: 1.1em; color: #e0e0e0; }
+        #content h1 { font-family: 'Playfair Display', serif; color: var(--gogh-yellow); font-size: 2.8em; text-align: center; margin-bottom: 30px; text-shadow: 0 0 15px rgba(252, 212, 64, 0.3); }
+        #content h2 { color: var(--text-white); margin-top: 50px; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; }
         #content p { margin-bottom: 20px; text-align: justify; }
-        #content img { 
-            max-width: 100%; 
-            border-radius: 5px; 
-            box-shadow: 0 0 20px rgba(0,0,0,0.5); 
-            display: block; 
-            margin: 30px auto; 
-        }
-        #content blockquote {
-            border-left: 3px solid var(--gogh-yellow);
-            margin: 20px 0;
-            padding-left: 20px;
-            color: var(--text-grey);
-            font-style: italic;
+        
+        /* 图片样式 */
+        #content img { max-width: 100%; border-radius: 5px; box-shadow: 0 0 20px rgba(0,0,0,0.5); display: block; margin: 30px auto; }
+        
+        /* 引用块样式 */
+        #content blockquote { border-left: 3px solid var(--gogh-yellow); margin: 20px 0; padding-left: 20px; color: #aaa; font-style: italic; background: rgba(0,0,0,0.2); padding: 10px 20px; border-radius: 0 5px 5px 0; }
+
+        @media (max-width: 768px) {
+            .container { padding: 25px; margin: 0; border-radius: 0; border: none; }
+            #content h1 { font-size: 2em; }
         }
     </style>
 </head>
 <body>
 
+    <div id="progress-bar"></div>
+
     <div class="container">
         <div class="nav-bar">
-            <a href="javascript:history.back()" class="back-link">← Back</a>
+            <a href="javascript:history.back()" class="back-link">← Return to Star Map</a>
         </div>
         
         <div id="content">Loading story...</div>
     </div>
 
     <script>
-        // 1. 获取网址里的文件名参数 (?file=xxx)
+        // 1. 阅读进度条逻辑
+        window.onscroll = function() {
+            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            let scrolled = (winScroll / height) * 100;
+            document.getElementById("progress-bar").style.width = scrolled + "%";
+        };
+
+        // 2. 加载 Markdown
         const urlParams = new URLSearchParams(window.location.search);
         const fileName = urlParams.get('file');
 
-        // 2. 如果没有提供文件名，就报错
         if (!fileName) {
-            document.getElementById('content').innerHTML = "<p style='color:red'>Error: No story file specified.</p>";
+            document.getElementById('content').innerHTML = "<p style='color:red'>Error: No file specified.</p>";
         } else {
-            // 3. 去 'stories' 文件夹里找对应的 .md 文件
             fetch(`stories/${fileName}.md`)
                 .then(response => {
                     if (!response.ok) throw new Error("Story not found");
                     return response.text();
                 })
                 .then(markdownText => {
-                    // 4. 把 Markdown 转换成 HTML 并显示出来
+                    // 开启 Markdown 的 HTML 解析功能 (为了支持视频标签)
                     document.getElementById('content').innerHTML = marked.parse(markdownText);
-                    // 修改网页标题为文章的第一行（通常是标题）
                     document.title = fileName + " - FGFS MEMOIRE";
                 })
                 .catch(error => {
-                    document.getElementById('content').innerHTML = `<p style='text-align:center'>Creating memories...<br><br><small>(${error.message}: File not found)</small></p>`;
+                    document.getElementById('content').innerHTML = `<p style='text-align:center'>Creating memories...<br><br><small>(${error.message})</small></p>`;
                 });
         }
     </script>

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reading... - FGFS MEMOIRE</title>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Roboto:wght@300;400;500&family=Noto+San+SC:wght@300;400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Roboto:wght@300;400;500&family=Noto+Sans+SC:wght@300;400;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -26,24 +26,21 @@
         }
 
         body {
-           background-color: var(--bg-deep);
-    color: var(--text-white);
-    /* 优先使用 Roboto，中文保留思源宋体作为兜底 */
-    font-family: 'Roboto', 'Noto San SC', san-serif; 
-    margin: 0; padding: 0;
-    min-height: 100vh;
-    background-image: radial-gradient(circle at 50% 30%, #1a254a 0%, #0b1026 70%);
-    background-attachment: fixed; /* 背景固定，营造深邃感 */
+            background-color: var(--bg-deep);
+            color: var(--text-white);
+            font-family: 'Roboto', 'Noto Sans SC', sans-serif; 
+            margin: 0; padding: 0;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 50% 30%, #1a254a 0%, #0b1026 70%);
+            background-attachment: fixed; /* 背景固定 */
         }
         
         .container {
             max-width: 800px;
-            margin: 60px auto 100px; /* 上下留白 */
+            margin: 60px auto 100px; 
             padding: 50px;
-            
-            /* --- 核心：流光玻璃特效 --- */
             background: var(--glass-bg);
-            backdrop-filter: blur(12px); /* 磨砂模糊 */
+            backdrop-filter: blur(12px);
             border: 1px solid var(--glass-border);
             border-radius: 12px;
             box-shadow: 0 0 40px rgba(0,0,0,0.6), inset 0 0 20px rgba(255, 255, 255, 0.05);
@@ -60,16 +57,11 @@
         }
         .back-link:hover { text-shadow: 0 0 10px var(--gogh-yellow); }
 
-        /* --- 视频播放器样式 (重点) --- */
+        /* 视频样式 */
         video {
-            width: 100%;           /* 宽度撑满容器 */
-            max-height: 80vh;      /* 高度不要超过屏幕 */
-            border-radius: 8px;    /* 圆角 */
-            margin: 30px 0;        /* 上下间距 */
-            box-shadow: 0 0 20px rgba(0,0,0,0.5); /* 视频阴影 */
-            border: 1px solid rgba(255, 223, 80, 0.2); /* 微弱的金边 */
-            background: #000;      /* 视频加载前的黑底 */
-            display: block;
+            width: 100%; max-height: 80vh; border-radius: 8px; margin: 30px 0;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5); border: 1px solid rgba(255, 223, 80, 0.2);
+            background: #000; display: block;
         }
 
         /* 文章内容样式 */
@@ -77,16 +69,63 @@
         #content h1 { font-family: 'Playfair Display', serif; color: var(--gogh-yellow); font-size: 2.8em; text-align: center; margin-bottom: 30px; text-shadow: 0 0 15px rgba(252, 212, 64, 0.3); }
         #content h2 { color: var(--text-white); margin-top: 50px; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; }
         #content p { margin-bottom: 20px; text-align: justify; }
-        
-        /* 图片样式 */
         #content img { max-width: 100%; border-radius: 5px; box-shadow: 0 0 20px rgba(0,0,0,0.5); display: block; margin: 30px auto; }
-        
-        /* 引用块样式 */
         #content blockquote { border-left: 3px solid var(--gogh-yellow); margin: 20px 0; padding-left: 20px; color: #aaa; font-style: italic; background: rgba(0,0,0,0.2); padding: 10px 20px; border-radius: 0 5px 5px 0; }
+
+        /* --- 回到顶部按钮样式 --- */
+        #back-to-top {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 15px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            color: var(--gogh-yellow);
+            cursor: pointer;
+            z-index: 1001;
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        #back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #back-to-top:hover {
+            border-color: var(--gogh-yellow);
+            box-shadow: 0 0 15px rgba(252, 212, 64, 0.2);
+            transform: translateY(-3px);
+        }
+
+        #back-to-top span {
+            font-size: 0.8em;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-family: 'Playfair Display', serif;
+        }
+
+        #back-to-top svg {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.4s;
+        }
+
+        #back-to-top:hover svg {
+            transform: rotate(90deg);
+        }
 
         @media (max-width: 768px) {
             .container { padding: 25px; margin: 0; border-radius: 0; border: none; }
             #content h1 { font-size: 2em; }
+            #back-to-top { bottom: 20px; right: 20px; }
         }
     </style>
 </head>
@@ -102,16 +141,37 @@
         <div id="content">Loading story...</div>
     </div>
 
+    <div id="back-to-top">
+        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 0L14.594 9.406L24 12L14.594 14.594L12 24L9.406 14.594L0 12L9.406 9.406L12 0Z"/>
+        </svg>
+        <span>Back to Top</span>
+    </div>
+
     <script>
-        // 1. 阅读进度条逻辑
+        const btt = document.getElementById("back-to-top");
+
+        // 1. 滚动逻辑
         window.onscroll = function() {
             let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
             let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             let scrolled = (winScroll / height) * 100;
             document.getElementById("progress-bar").style.width = scrolled + "%";
+
+            // 滚动超过 300px 显示按钮
+            if (winScroll > 300) {
+                btt.classList.add("show");
+            } else {
+                btt.classList.remove("show");
+            }
         };
 
-        // 2. 加载 Markdown
+        // 2. 点击回顶
+        btt.onclick = function() {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        };
+
+        // 3. 加载 Markdown
         const urlParams = new URLSearchParams(window.location.search);
         const fileName = urlParams.get('file');
 
@@ -124,7 +184,6 @@
                     return response.text();
                 })
                 .then(markdownText => {
-                    // 开启 Markdown 的 HTML 解析功能 (为了支持视频标签)
                     document.getElementById('content').innerHTML = marked.parse(markdownText);
                     document.title = fileName + " - FGFS MEMOIRE";
                 })
@@ -135,8 +194,3 @@
     </script>
 </body>
 </html>
-
-
-
-
-

@@ -48,6 +48,17 @@
             backdrop-filter: blur(2px); 
         }
 
+        /* 定义入场动画 */
+        @keyframes fadeInPage {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        body {
+            /* 应用动画：0.8秒完成，平滑过渡 */
+            animation: fadeInPage 0.8s ease-out;
+        }
+
         /* --- 主视觉区域 --- */
         .hero-split {
             display: flex;
@@ -146,7 +157,6 @@
         
         .split-right::-webkit-scrollbar-track {
             background: transparent;
-            /* 中间画一条金色的细线 */
             background-image: linear-gradient(to right, 
                 transparent 48%, 
                 rgba(255, 223, 80, 0.3) 49%, 
@@ -157,7 +167,6 @@
         
         .split-right::-webkit-scrollbar-thumb {
             background-color: transparent;
-            /* 星星图标 */
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23fcd440'%3E%3Cpath d='M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z' /%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: center;
@@ -165,7 +174,6 @@
             filter: drop-shadow(0 0 4px rgba(252, 212, 64, 0.9));
         }
 
-        /* Event Log 标题及分隔线 */
         .timeline-header {
             font-family: var(--font-art);
             font-size: 1.8em;
@@ -191,7 +199,6 @@
             cursor: default;
         }
 
-        /* Event Log 下方金色短线 */
         .timeline-header::after {
             content: '';
             display: block;
@@ -334,7 +341,7 @@
         .close-btn:hover { color: var(--gogh-yellow); text-shadow: 0 0 15px var(--gogh-yellow); }
 
         /* ==================
-           移动端适配 (核心修改)
+           移动端适配
            ================== */
         @media (max-width: 768px) {
             .hero-split { flex-direction: column; height: auto; box-shadow: none; border-bottom: none; }
@@ -380,9 +387,8 @@
                 transition: max-height 0.5s ease, opacity 0.3s ease, padding 0.5s ease;
             }
             
-            /* [修复] 增加高度上限，确保能显示所有年份 */
             .year-list.active {
-                max-height: 1000px; /* 从600px 改为 1000px，足够容纳更多年份 */
+                max-height: 1000px; 
                 opacity: 1;
                 padding: 30px 0; 
             }
@@ -451,16 +457,14 @@
                 Event Log <span class="header-arrow">▼</span>
             </h2>
             <div class="year-list" id="yearList">
-                
-                <a href="2024.html" class="year-link">2019</a>
-                <a href="2024.html" class="year-link">2020</a>
-                <a href="2024.html" class="year-link">2021</a>
-                <a href="2024.html" class="year-link">2022</a>
-                <a href="2024.html" class="year-link">2023</a>
+                <a href="2019.html" class="year-link">2019</a>
+                <a href="2020.html" class="year-link">2020</a>
+                <a href="2021.html" class="year-link">2021</a>
+                <a href="2022.html" class="year-link">2022</a>
+                <a href="2023.html" class="year-link">2023</a>
                 <a href="2024.html" class="year-link">2024</a>
-                <a href="2024.html" class="year-link">2025</a>
-                <a href="2024.html" class="year-link">2026</a>
-
+                <a href="2025.html" class="year-link">2025</a>
+                <a href="2026.html" class="year-link">2026</a>
             </div>
         </section>
     </main>

@@ -1,14 +1,14 @@
 **2nd Anniversay**
 
-<img src="images/cover.png" style="width: 100%; border-radius: 8px;">
+<img src="images/2nd.jpg" style="width: 85%; border-radius: 8px;">
 
-**fgr** 这云的走向，真是糟透了……。
+**fgr**  这云的走向，真是糟透了……。
 
-fst：Figaro。
+**fst**  Figaro。
 
-fgr：Faust……。
+**fgr**  Faust……。
 
-fst：是Oz和Mithra。也有贤者和双子的气息。我打算现在去阻止他们。
+**fst**  是Oz和Mithra。也有贤者和双子的气息。我打算现在去阻止他们。
 
 
 
@@ -325,6 +325,7 @@ fgr：原来如此。虽然我一直感觉是自己被抛弃了……。
 
 
 fgr：但对那个孩子而言，是他突然被我逐出师门了啊。
+
 
 
 

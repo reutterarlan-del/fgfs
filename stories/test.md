@@ -1,4 +1,7 @@
-**2nd Anniversay**
+
+<p style="text-align: center; font-size: 1.5em; color: var(--gogh-yellow); font-family: 'Playfair Display', serif; margin: 40px 0;">
+    2nd Anniversary
+</p>
 
 <img src="images/2nd.jpg" style="width: 85%; border-radius: 8px;">
 
@@ -325,6 +328,7 @@ fgr：原来如此。虽然我一直感觉是自己被抛弃了……。
 
 
 fgr：但对那个孩子而言，是他突然被我逐出师门了啊。
+
 
 
 

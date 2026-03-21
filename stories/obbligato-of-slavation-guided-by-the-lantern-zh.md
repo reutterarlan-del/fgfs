@@ -1,5 +1,5 @@
 <p style="text-align: center; font-size: 1.5em; color: var(--gogh-yellow); font-family: 'Playfair Display', serif; margin: 40px 0;">
-    角灯導く救いのオブリガート
+    角灯引导的救赎助奏曲
 </p>
 
 **第五话** 
@@ -121,8 +121,6 @@ Shino：Riquet身边，应该有你陪着。
 Arthur：Shino……
 
 Arthur：谢谢你。我一定会把这个任务完成到底。
-
-***
 
 Figaro：Faust。
 

@@ -221,7 +221,7 @@
                 return;
             }
 
-            const targetFile = `stories/${baseFileName}-${langSuffix}.md`;
+            const targetFile = `stories/${baseFileName}/${langSuffix}.md`;
             document.getElementById('content').innerHTML = "<p style='text-align:center; color:#888;'>Loading data...</p>";
 
             fetch(`${targetFile}?v=${new Date().getTime()}`)

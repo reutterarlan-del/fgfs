@@ -6,10 +6,11 @@
     <title>Reading... - FGFS MEMOIRE</title>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
+            /* 回归原始星空色调 */
             --bg-deep: #0b1026;
             --glass-bg: rgba(15, 20, 35, 0.85);
             --glass-border: rgba(255, 223, 80, 0.3);
@@ -20,8 +21,7 @@
 
         #progress-bar {
             position: fixed; top: 0; left: 0; height: 3px;
-            background: var(--gogh-yellow);
-            width: 0%; z-index: 1000;
+            background: var(--gogh-yellow); width: 0%; z-index: 1000;
             box-shadow: 0 0 10px var(--gogh-yellow);
             transition: width 0.1s;
         }
@@ -29,13 +29,13 @@
         body {
             background-color: var(--bg-deep);
             color: var(--text-white);
-            /* 全面回归 Roboto */
-            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+            /* 严格执行指定的字体代码 */
+            font-family: 'Roboto', 'Noto Sans SC', sans-serif;
             margin: 0; padding: 0;
             min-height: 100vh;
+            /* 回归原始星空径向渐变 */
             background-image: radial-gradient(circle at 50% 30%, #1a254a 0%, #0b1026 70%);
             background-attachment: fixed;
-            letter-spacing: 0.01em;
         }
         
         .container {
@@ -54,67 +54,54 @@
             color: var(--gogh-yellow);
             text-decoration: none;
             font-weight: 500;
-            font-size: 1.1em;
             transition: all 0.3s;
         }
         .back-link:hover { text-shadow: 0 0 10px var(--gogh-yellow); }
 
         .tab-container {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 30px;
+            display: flex; gap: 15px; margin-bottom: 30px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            padding-bottom: 15px;
-            overflow-x: auto;
+            padding-bottom: 15px; overflow-x: auto;
         }
 
         .tab-btn {
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: var(--text-grey);
-            padding: 6px 16px;
-            border-radius: 4px; /* 改为更朴素的微圆角 */
-            font-size: 0.9em;
-            font-weight: 400;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            background: transparent; border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--text-grey); padding: 8px 18px; border-radius: 4px;
+            font-size: 0.9em; cursor: pointer; transition: all 0.3s ease;
         }
-
-        .tab-btn:hover { border-color: var(--gogh-yellow); color: var(--text-white); }
         .tab-btn.active {
-            background: rgba(252, 212, 64, 0.1);
+            background: rgba(255, 223, 80, 0.1);
             border-color: var(--gogh-yellow);
             color: var(--gogh-yellow);
         }
 
-        /* 视频/iframe 样式：遵循你要求的“朴素自适应” */
+        /* --- 核心内容区：精准匹配截图参数 --- */
+        #content { 
+            line-height: 1.85; /* 严格按照截图比例 */
+            font-size: 17px;    /* 严格按照截图视觉大小 */
+            color: var(--text-white);
+            text-align: justify; /* 保持两端对齐 */
+        }
+
+        #content p { margin-bottom: 1.5em; }
+
+        /* 朴素自适应视频样式 */
         iframe {
-            width: 100%;           
-            aspect-ratio: 1080 / 2400;
-            max-height: 80vh;
-            max-width: calc(80vh * (1080 / 2400));
-            border-radius: 4px;    
-            margin: 30px auto;        
+            width: 100%; aspect-ratio: 1080 / 2400;
+            max-height: 80vh; max-width: calc(80vh * (1080 / 2400));
+            border-radius: 4px; margin: 30px auto;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
             border: 1px solid rgba(255, 255, 255, 0.1); 
-            background: #000;      
-            display: block;
+            background: #000; display: block;
         }
 
-        .p-selector { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin: 20px 0 40px; }
+        .p-selector { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin: 20px 0 40px; }
         .p-btn {
-            padding: 5px 12px; border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 6px 16px; border: 1px solid rgba(255, 255, 255, 0.2);
             background: rgba(255, 255, 255, 0.05); color: var(--text-grey);
-            border-radius: 3px; text-decoration: none; font-size: 0.85em; transition: all 0.3s;
+            border-radius: 4px; text-decoration: none; font-size: 0.85em; transition: all 0.3s;
         }
         .p-btn:hover, .p-btn.active-p { border-color: var(--gogh-yellow); color: var(--gogh-yellow); }
-        .p-btn.active-p { font-weight: 700; background: rgba(252, 212, 64, 0.05); }
-
-        #content { line-height: 1.7; font-size: 1.05em; color: #e0e0e0; }
-        #content h1 { font-weight: 700; color: var(--gogh-yellow); font-size: 2.2em; text-align: center; margin-bottom: 30px; letter-spacing: -0.02em; }
-        #content h2 { font-weight: 500; color: var(--text-white); margin-top: 40px; border-bottom: 1px solid var(--glass-border); padding-bottom: 8px; }
-        #content p { margin-bottom: 18px; text-align: justify; }
-        #content blockquote { border-left: 3px solid var(--gogh-yellow); margin: 20px 0; padding: 10px 20px; color: #aaa; background: rgba(255,255,255,0.03); border-radius: 0 4px 4px 0; }
 
         #back-to-top {
             position: fixed; bottom: 30px; right: 30px;
@@ -127,6 +114,7 @@
 
         @media (max-width: 768px) {
             .container { padding: 25px; margin: 0; border-radius: 0; border: none; }
+            #content { font-size: 16.5px; } /* 移动端微调确保体感一致 */
             iframe { max-height: none; max-width: 100%; border-radius: 0; }
         }
     </style>
@@ -163,19 +151,13 @@
                         processed = text.replace(/page=\d+/g, `page=${currentP}`);
                     }
                     document.getElementById('content').innerHTML = marked.parse(processed);
-                    updatePButtonUI();
                 });
         }
 
         function updateTabUI(lang) {
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`tab-${lang}`).classList.add('active');
-        }
-
-        function updatePButtonUI() {
-            document.querySelectorAll('.p-btn').forEach(btn => {
-                btn.classList.toggle('active-p', btn.getAttribute('data-p') === currentP);
-            });
+            const activeBtn = document.getElementById(`tab-${lang}`);
+            if(activeBtn) activeBtn.classList.add('active');
         }
 
         function switchTab(langSuffix) {
@@ -186,14 +168,12 @@
             loadMarkdown(langSuffix);
         }
 
-        // 启动应用
         function startApp() {
             updateTabUI(currentTab);
             loadMarkdown(currentTab);
         }
         startApp();
 
-        // 进度条与回到顶部
         window.onscroll = function() {
             let winScroll = document.documentElement.scrollTop;
             let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;

@@ -83,6 +83,55 @@
         /* 引用块样式 */
         #content blockquote { border-left: 3px solid var(--gogh-yellow); margin: 20px 0; padding-left: 20px; color: #aaa; font-style: italic; background: rgba(0,0,0,0.2); padding: 10px 20px; border-radius: 0 5px 5px 0; }
 
+        /* --- 回到顶部按钮样式 --- */
+        #back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            background: var(--glass-bg);
+            border: none;
+            border-radius: 15px;
+            color: var(--gogh-yellow);
+            cursor: pointer;
+            z-index: 1001;
+            backdrop-filter: blur(8px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        #back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        #back-to-top:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        #back-to-top span {
+            font-size: 0.75em;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-family: 'Playfair Display', serif;
+        }
+
+        #back-to-top svg {
+            width: 12px;
+            height: 12px;
+            transition: transform 0.4s;
+        }
+
+        #back-to-top:hover svg {
+            transform: rotate(90deg);
+        }
+
         @media (max-width: 768px) {
             .container { padding: 25px; margin: 0; border-radius: 0; border: none; }
             #content h1 { font-size: 2em; }
@@ -95,22 +144,45 @@
 
     <div class="container">
         <div class="nav-bar">
-            <a href="javascript:history.back()" class="back-link">← Return to Star Map</a>
+            <a href="javascript:history.back()" class="back-link">← Home</a>
         </div>
         
         <div id="content">Loading story...</div>
     </div>
 
+    <div id="back-to-top" title="飞回顶部">
+        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 0L14.594 9.406L24 12L14.594 14.594L12 24L9.406 14.594L0 12L9.406 9.406L12 0Z"/>
+        </svg>
+        <span>TOP</span>
+    </div>
+
     <script>
-        // 1. 阅读进度条逻辑
+        const btt = document.getElementById("back-to-top");
+
+        // 1. 合并滚动监听逻辑：进度条 + 按钮显隐
         window.onscroll = function() {
             let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
             let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             let scrolled = (winScroll / height) * 100;
+            
+            // 更新进度条
             document.getElementById("progress-bar").style.width = scrolled + "%";
+
+            // 滚动超过 300px 显示按钮
+            if (winScroll > 300) {
+                btt.classList.add("show");
+            } else {
+                btt.classList.remove("show");
+            }
         };
 
-        // 2. 加载 Markdown
+        // 2. 点击平滑回顶
+        btt.onclick = function() {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        };
+
+        // 3. 加载 Markdown
         const urlParams = new URLSearchParams(window.location.search);
         const fileName = urlParams.get('file');
 
@@ -123,7 +195,6 @@
                     return response.text();
                 })
                 .then(markdownText => {
-                    // 开启 Markdown 的 HTML 解析功能 (为了支持视频标签)
                     document.getElementById('content').innerHTML = marked.parse(markdownText);
                     document.title = fileName + " - FGFS MEMOIRE";
                 })

@@ -91,7 +91,6 @@
             text-shadow: 0 0 5px rgba(252, 212, 64, 0.5);
         }
 
-        /* 统一 iframe 与视频展示 */
         video, iframe {
             width: 100%;           
             border-radius: 8px;    
@@ -102,7 +101,6 @@
             display: block;
         }
 
-        /* --- 手动选集按钮样式 --- */
         .p-selector {
             display: flex;
             justify-content: center;
@@ -183,7 +181,7 @@
         </div>
         
         <div class="tab-container">
-            <button class="tab-btn active" id="tab-zh" onclick="switchTab('zh')">ZH</button>
+            <button class="tab-btn" id="tab-zh" onclick="switchTab('zh')">ZH</button>
             <button class="tab-btn" id="tab-jp" onclick="switchTab('jp')">JP</button>
             <button class="tab-btn" id="tab-media" onclick="switchTab('media')">Media</button>
         </div>
@@ -210,11 +208,10 @@
 
         btt.onclick = function() { window.scrollTo({ top: 0, behavior: "smooth" }); };
 
-        // --- 核心逻辑：支持 URL 参数读取与分 P 注入 ---
         const urlParams = new URLSearchParams(window.location.search);
         const baseFileName = urlParams.get('file');
-        let currentP = urlParams.get('p') || '1'; // 获取当前分 P
-        let currentTab = 'zh'; 
+        let currentP = urlParams.get('p') || '1';
+        let currentTab = urlParams.has('p') ? 'media' : 'zh'; // 关键：有 p 参数初始化为 media，否则为 zh
 
         function loadMarkdown(langSuffix) {
             if (!baseFileName) {
@@ -232,16 +229,11 @@
                 })
                 .then(markdownText => {
                     let processedText = markdownText;
-                    
-                    // 如果是媒体页，通过正则将 iframe 的 page 参数替换为当前 P
                     if (langSuffix === 'media') {
                         processedText = markdownText.replace(/page=\d+/g, `page=${currentP}`);
                     }
-
                     document.getElementById('content').innerHTML = marked.parse(processedText);
                     document.title = `${baseFileName.toUpperCase()} - FGFS MEMOIRE`;
-                    
-                    // 加载完后更新按钮高亮
                     updatePButtonUI();
                 })
                 .catch(error => {
@@ -255,7 +247,6 @@
 
         function updatePButtonUI() {
             document.querySelectorAll('.p-btn').forEach(btn => {
-                // 如果按钮的 data-p 属性等于当前 P，则高亮
                 if (btn.getAttribute('data-p') === currentP) {
                     btn.classList.add('active-p');
                 } else {
@@ -267,18 +258,27 @@
         function switchTab(langSuffix) {
             if (currentTab === langSuffix) return;
             currentTab = langSuffix;
-            // 切换标签页时通常重置为 P1
             if (langSuffix !== 'media') currentP = '1';
 
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(`tab-${langSuffix}`).classList.add('active');
+            const activeTabBtn = document.getElementById(`tab-${langSuffix}`);
+            if(activeTabBtn) activeTabBtn.classList.add('active');
 
             window.scrollTo({ top: 0, behavior: "smooth" });
             loadMarkdown(langSuffix);
         }
 
-        // 初始化
-        loadMarkdown('zh');
+        // 启动应用
+        function startApp() {
+            // 确保初始按钮高亮正确
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            const initBtn = document.getElementById(`tab-${currentTab}`);
+            if(initBtn) initBtn.classList.add('active');
+            
+            loadMarkdown(currentTab);
+        }
+
+        startApp();
     </script>
 </body>
 </html>

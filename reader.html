@@ -13,7 +13,7 @@
             --glass-bg: rgba(15, 20, 35, 0.85);
             --glass-border: rgba(255, 223, 80, 0.3);
             --text-white: #f0f0f0;      
-            --text-grey: #aaaaaa; /* 补充了灰色变量供标签页使用 */
+            --text-grey: #aaaaaa; 
             --gogh-yellow: #fcd440;     
         }
 
@@ -56,7 +56,6 @@
         }
         .back-link:hover { text-shadow: 0 0 10px var(--gogh-yellow); }
 
-        /* --- 新增：标签页 (Tab Bar) 样式 --- */
         .tab-container {
             display: flex;
             gap: 15px;
@@ -92,15 +91,46 @@
             text-shadow: 0 0 5px rgba(252, 212, 64, 0.5);
         }
 
+        /* 统一 iframe 与视频展示 */
         video, iframe {
             width: 100%;           
-            max-height: 80vh;      
             border-radius: 8px;    
             margin: 30px 0;        
             box-shadow: 0 0 20px rgba(0,0,0,0.5); 
             border: 1px solid rgba(255, 223, 80, 0.2); 
             background: #000;      
             display: block;
+        }
+
+        /* --- 手动选集按钮样式 --- */
+        .p-selector {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0 40px;
+        }
+
+        .p-btn {
+            padding: 6px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-grey);
+            border-radius: 4px;
+            text-decoration: none;
+            font-size: 0.85em;
+            transition: all 0.3s;
+        }
+
+        .p-btn:hover, .p-btn.active-p {
+            border-color: var(--gogh-yellow);
+            color: var(--gogh-yellow);
+            background: rgba(252, 212, 64, 0.1);
+        }
+
+        .p-btn.active-p {
+            box-shadow: 0 0 10px rgba(252, 212, 64, 0.3);
+            font-weight: bold;
         }
 
         #content { line-height: 1.8; font-size: 1.1em; color: #e0e0e0; }
@@ -131,32 +161,11 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
         }
 
-        #back-to-top.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        #back-to-top:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
-        }
-
-        #back-to-top span {
-            font-size: 0.75em;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            font-family: 'Playfair Display', serif;
-        }
-
-        #back-to-top svg {
-            width: 12px;
-            height: 12px;
-            transition: transform 0.4s;
-        }
-
-        #back-to-top:hover svg {
-            transform: rotate(90deg);
-        }
+        #back-to-top.show { opacity: 1; visibility: visible; }
+        #back-to-top:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-2px); }
+        #back-to-top span { font-size: 0.75em; letter-spacing: 2px; text-transform: uppercase; font-family: 'Playfair Display', serif; }
+        #back-to-top svg { width: 12px; height: 12px; transition: transform 0.4s; }
+        #back-to-top:hover svg { transform: rotate(90deg); }
 
         @media (max-width: 768px) {
             .container { padding: 25px; margin: 0; border-radius: 0; border: none; }
@@ -190,30 +199,22 @@
     </div>
 
     <script>
-        // 1. 回到顶部与进度条逻辑 (保持原样)
         const btt = document.getElementById("back-to-top");
         window.onscroll = function() {
             let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
             let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             let scrolled = (winScroll / height) * 100;
-            
             document.getElementById("progress-bar").style.width = scrolled + "%";
-
-            if (winScroll > 300) {
-                btt.classList.add("show");
-            } else {
-                btt.classList.remove("show");
-            }
+            if (winScroll > 300) { btt.classList.add("show"); } else { btt.classList.remove("show"); }
         };
 
-        btt.onclick = function() {
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        };
+        btt.onclick = function() { window.scrollTo({ top: 0, behavior: "smooth" }); };
 
-        // 2. 路由与多维加载逻辑 (重构核心)
+        // --- 核心逻辑：支持 URL 参数读取与分 P 注入 ---
         const urlParams = new URLSearchParams(window.location.search);
         const baseFileName = urlParams.get('file');
-        let currentTab = 'zh'; // 默认启动项
+        let currentP = urlParams.get('p') || '1'; // 获取当前分 P
+        let currentTab = 'zh'; 
 
         function loadMarkdown(langSuffix) {
             if (!baseFileName) {
@@ -230,8 +231,18 @@
                     return response.text();
                 })
                 .then(markdownText => {
-                    document.getElementById('content').innerHTML = marked.parse(markdownText);
+                    let processedText = markdownText;
+                    
+                    // 如果是媒体页，通过正则将 iframe 的 page 参数替换为当前 P
+                    if (langSuffix === 'media') {
+                        processedText = markdownText.replace(/page=\d+/g, `page=${currentP}`);
+                    }
+
+                    document.getElementById('content').innerHTML = marked.parse(processedText);
                     document.title = `${baseFileName.toUpperCase()} - FGFS MEMOIRE`;
+                    
+                    // 加载完后更新按钮高亮
+                    updatePButtonUI();
                 })
                 .catch(error => {
                     document.getElementById('content').innerHTML = `
@@ -242,23 +253,31 @@
                 });
         }
 
+        function updatePButtonUI() {
+            document.querySelectorAll('.p-btn').forEach(btn => {
+                // 如果按钮的 data-p 属性等于当前 P，则高亮
+                if (btn.getAttribute('data-p') === currentP) {
+                    btn.classList.add('active-p');
+                } else {
+                    btn.classList.remove('active-p');
+                }
+            });
+        }
+
         function switchTab(langSuffix) {
             if (currentTab === langSuffix) return;
             currentTab = langSuffix;
+            // 切换标签页时通常重置为 P1
+            if (langSuffix !== 'media') currentP = '1';
 
-            // 切换按钮的高亮状态
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`tab-${langSuffix}`).classList.add('active');
 
-            // 进度条归零，平滑回顶
-            document.getElementById("progress-bar").style.width = "0%";
             window.scrollTo({ top: 0, behavior: "smooth" });
-
-            // 加载对应数据
             loadMarkdown(langSuffix);
         }
 
-        // 3. 页面初始化
+        // 初始化
         loadMarkdown('zh');
     </script>
 </body>

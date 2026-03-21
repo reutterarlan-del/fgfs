@@ -122,8 +122,6 @@ Arthur：Shino……
 
 Arthur：谢谢你。我一定会把这个任务完成到底。
 
-***
-
 Figaro：Faust。
 
 Figaro：怎么了。居然瞒着大家，把我一个人叫过来。

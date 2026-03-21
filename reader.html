@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reading... - FGFS MEMOIRE</title>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Serif+SC:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -28,11 +29,13 @@
         body {
             background-color: var(--bg-deep);
             color: var(--text-white);
-            font-family: 'Noto Serif SC', serif;
+            /* 全面回归 Roboto */
+            font-family: 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
             margin: 0; padding: 0;
             min-height: 100vh;
             background-image: radial-gradient(circle at 50% 30%, #1a254a 0%, #0b1026 70%);
             background-attachment: fixed;
+            letter-spacing: 0.01em;
         }
         
         .container {
@@ -50,15 +53,15 @@
         .back-link {
             color: var(--gogh-yellow);
             text-decoration: none;
-            font-family: 'Playfair Display', serif;
-            font-size: 1.2em;
+            font-weight: 500;
+            font-size: 1.1em;
             transition: all 0.3s;
         }
         .back-link:hover { text-shadow: 0 0 10px var(--gogh-yellow); }
 
         .tab-container {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             margin-bottom: 30px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             padding-bottom: 15px;
@@ -67,218 +70,137 @@
 
         .tab-btn {
             background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             color: var(--text-grey);
-            padding: 8px 18px;
-            border-radius: 20px;
-            font-family: 'Noto Serif SC', serif;
-            font-size: 0.95em;
+            padding: 6px 16px;
+            border-radius: 4px; /* 改为更朴素的微圆角 */
+            font-size: 0.9em;
+            font-weight: 400;
             cursor: pointer;
             transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
         }
 
-        .tab-btn:hover {
-            border-color: rgba(255, 223, 80, 0.5);
-            color: var(--text-white);
-        }
-
+        .tab-btn:hover { border-color: var(--gogh-yellow); color: var(--text-white); }
         .tab-btn.active {
-            background: rgba(255, 223, 80, 0.1);
+            background: rgba(252, 212, 64, 0.1);
             border-color: var(--gogh-yellow);
             color: var(--gogh-yellow);
-            box-shadow: 0 0 10px rgba(252, 212, 64, 0.2);
-            text-shadow: 0 0 5px rgba(252, 212, 64, 0.5);
         }
 
-        video, iframe {
+        /* 视频/iframe 样式：遵循你要求的“朴素自适应” */
+        iframe {
             width: 100%;           
-            border-radius: 8px;    
-            margin: 30px 0;        
-            box-shadow: 0 0 20px rgba(0,0,0,0.5); 
-            border: 1px solid rgba(255, 223, 80, 0.2); 
+            aspect-ratio: 1080 / 2400;
+            max-height: 80vh;
+            max-width: calc(80vh * (1080 / 2400));
+            border-radius: 4px;    
+            margin: 30px auto;        
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            border: 1px solid rgba(255, 255, 255, 0.1); 
             background: #000;      
             display: block;
         }
 
-        .p-selector {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin: 20px 0 40px;
-        }
-
+        .p-selector { display: flex; justify-content: center; flex-wrap: wrap; gap: 8px; margin: 20px 0 40px; }
         .p-btn {
-            padding: 6px 16px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-grey);
-            border-radius: 4px;
-            text-decoration: none;
-            font-size: 0.85em;
-            transition: all 0.3s;
+            padding: 5px 12px; border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05); color: var(--text-grey);
+            border-radius: 3px; text-decoration: none; font-size: 0.85em; transition: all 0.3s;
         }
+        .p-btn:hover, .p-btn.active-p { border-color: var(--gogh-yellow); color: var(--gogh-yellow); }
+        .p-btn.active-p { font-weight: 700; background: rgba(252, 212, 64, 0.05); }
 
-        .p-btn:hover, .p-btn.active-p {
-            border-color: var(--gogh-yellow);
-            color: var(--gogh-yellow);
-            background: rgba(252, 212, 64, 0.1);
-        }
-
-        .p-btn.active-p {
-            box-shadow: 0 0 10px rgba(252, 212, 64, 0.3);
-            font-weight: bold;
-        }
-
-        #content { line-height: 1.8; font-size: 1.1em; color: #e0e0e0; }
-        #content h1 { font-family: 'Playfair Display', serif; color: var(--gogh-yellow); font-size: 2.8em; text-align: center; margin-bottom: 30px; text-shadow: 0 0 15px rgba(252, 212, 64, 0.3); }
-        #content h2 { color: var(--text-white); margin-top: 50px; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; }
-        #content p { margin-bottom: 20px; text-align: justify; }
-        #content img { max-width: 100%; border-radius: 5px; box-shadow: 0 0 20px rgba(0,0,0,0.5); display: block; margin: 30px auto; }
-        #content blockquote { border-left: 3px solid var(--gogh-yellow); margin: 20px 0; padding-left: 20px; color: #aaa; font-style: italic; background: rgba(0,0,0,0.2); padding: 10px 20px; border-radius: 0 5px 5px 0; }
+        #content { line-height: 1.7; font-size: 1.05em; color: #e0e0e0; }
+        #content h1 { font-weight: 700; color: var(--gogh-yellow); font-size: 2.2em; text-align: center; margin-bottom: 30px; letter-spacing: -0.02em; }
+        #content h2 { font-weight: 500; color: var(--text-white); margin-top: 40px; border-bottom: 1px solid var(--glass-border); padding-bottom: 8px; }
+        #content p { margin-bottom: 18px; text-align: justify; }
+        #content blockquote { border-left: 3px solid var(--gogh-yellow); margin: 20px 0; padding: 10px 20px; color: #aaa; background: rgba(255,255,255,0.03); border-radius: 0 4px 4px 0; }
 
         #back-to-top {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            padding: 5px 12px;
-            background: var(--glass-bg);
-            border: none;
-            border-radius: 15px;
-            color: var(--gogh-yellow);
-            cursor: pointer;
-            z-index: 1001;
-            backdrop-filter: blur(8px);
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.4s ease;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            position: fixed; bottom: 30px; right: 30px;
+            padding: 8px 15px; background: var(--glass-bg); border-radius: 20px;
+            color: var(--gogh-yellow); border: 1px solid var(--glass-border);
+            cursor: pointer; opacity: 0; visibility: hidden; transition: 0.4s;
+            font-size: 0.8em; font-weight: 700;
         }
-
         #back-to-top.show { opacity: 1; visibility: visible; }
-        #back-to-top:hover { background: rgba(255, 255, 255, 0.1); transform: translateY(-2px); }
-        #back-to-top span { font-size: 0.75em; letter-spacing: 2px; text-transform: uppercase; font-family: 'Playfair Display', serif; }
-        #back-to-top svg { width: 12px; height: 12px; transition: transform 0.4s; }
-        #back-to-top:hover svg { transform: rotate(90deg); }
 
         @media (max-width: 768px) {
             .container { padding: 25px; margin: 0; border-radius: 0; border: none; }
-            #content h1 { font-size: 2em; }
+            iframe { max-height: none; max-width: 100%; border-radius: 0; }
         }
     </style>
 </head>
 <body>
-
     <div id="progress-bar"></div>
-
     <div class="container">
         <div class="nav-bar">
-            <a href="#" onclick="window.history.length > 1 ? history.back() : window.location.href='index.html'; return false;" class="back-link">Event Menu</a>
+            <a href="#" onclick="window.history.length > 1 ? history.back() : window.location.href='index.html'; return false;" class="back-link">← Event Menu</a>
         </div>
-        
         <div class="tab-container">
             <button class="tab-btn" id="tab-zh" onclick="switchTab('zh')">ZH</button>
             <button class="tab-btn" id="tab-jp" onclick="switchTab('jp')">JP</button>
             <button class="tab-btn" id="tab-media" onclick="switchTab('media')">Media</button>
         </div>
-        
-        <div id="content">Loading story...</div>
+        <div id="content">Loading record...</div>
     </div>
-
-    <div id="back-to-top" title="飞回顶部">
-        <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 0L14.594 9.406L24 12L14.594 14.594L12 24L9.406 14.594L0 12L9.406 9.406L12 0Z"/>
-        </svg>
-        <span>TOP</span>
-    </div>
+    <div id="back-to-top">TOP ↑</div>
 
     <script>
-        const btt = document.getElementById("back-to-top");
-        window.onscroll = function() {
-            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            let scrolled = (winScroll / height) * 100;
-            document.getElementById("progress-bar").style.width = scrolled + "%";
-            if (winScroll > 300) { btt.classList.add("show"); } else { btt.classList.remove("show"); }
-        };
-
-        btt.onclick = function() { window.scrollTo({ top: 0, behavior: "smooth" }); };
-
         const urlParams = new URLSearchParams(window.location.search);
         const baseFileName = urlParams.get('file');
         let currentP = urlParams.get('p') || '1';
-        let currentTab = urlParams.has('p') ? 'media' : 'zh'; // 关键：有 p 参数初始化为 media，否则为 zh
+        let currentTab = urlParams.has('p') ? 'media' : 'zh';
 
         function loadMarkdown(langSuffix) {
-            if (!baseFileName) {
-                document.getElementById('content').innerHTML = "<p style='color:red'>Error: No file specified.</p>";
-                return;
-            }
-
+            if (!baseFileName) return;
             const targetFile = `stories/${baseFileName}/${langSuffix}.md`;
-            document.getElementById('content').innerHTML = "<p style='text-align:center; color:#888;'>Loading data...</p>";
-
             fetch(`${targetFile}?v=${new Date().getTime()}`)
-                .then(response => {
-                    if (!response.ok) throw new Error("File not found");
-                    return response.text();
-                })
-                .then(markdownText => {
-                    let processedText = markdownText;
+                .then(res => res.text())
+                .then(text => {
+                    let processed = text;
                     if (langSuffix === 'media') {
-                        processedText = markdownText.replace(/page=\d+/g, `page=${currentP}`);
+                        processed = text.replace(/page=\d+/g, `page=${currentP}`);
                     }
-                    document.getElementById('content').innerHTML = marked.parse(processedText);
-                    document.title = `${baseFileName.toUpperCase()} - FGFS MEMOIRE`;
+                    document.getElementById('content').innerHTML = marked.parse(processed);
                     updatePButtonUI();
-                })
-                .catch(error => {
-                    document.getElementById('content').innerHTML = `
-                        <div style="text-align:center; padding: 50px 0; color: #888;">
-                            <p>……</p>
-                            <small>(${targetFile} is missing)</small>
-                        </div>`;
                 });
+        }
+
+        function updateTabUI(lang) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tab-${lang}`).classList.add('active');
         }
 
         function updatePButtonUI() {
             document.querySelectorAll('.p-btn').forEach(btn => {
-                if (btn.getAttribute('data-p') === currentP) {
-                    btn.classList.add('active-p');
-                } else {
-                    btn.classList.remove('active-p');
-                }
+                btn.classList.toggle('active-p', btn.getAttribute('data-p') === currentP);
             });
         }
 
         function switchTab(langSuffix) {
             if (currentTab === langSuffix) return;
             currentTab = langSuffix;
-            if (langSuffix !== 'media') currentP = '1';
-
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            const activeTabBtn = document.getElementById(`tab-${langSuffix}`);
-            if(activeTabBtn) activeTabBtn.classList.add('active');
-
+            updateTabUI(langSuffix);
             window.scrollTo({ top: 0, behavior: "smooth" });
             loadMarkdown(langSuffix);
         }
 
         // 启动应用
         function startApp() {
-            // 确保初始按钮高亮正确
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            const initBtn = document.getElementById(`tab-${currentTab}`);
-            if(initBtn) initBtn.classList.add('active');
-            
+            updateTabUI(currentTab);
             loadMarkdown(currentTab);
         }
-
         startApp();
+
+        // 进度条与回到顶部
+        window.onscroll = function() {
+            let winScroll = document.documentElement.scrollTop;
+            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            document.getElementById("progress-bar").style.width = (winScroll / height) * 100 + "%";
+            document.getElementById("back-to-top").classList.toggle("show", winScroll > 300);
+        };
+        document.getElementById("back-to-top").onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
     </script>
 </body>
 </html>
